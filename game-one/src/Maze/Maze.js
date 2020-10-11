@@ -6,8 +6,7 @@ function Maze({data}) {
 
   var [curPlayerPos, updatePlayerPosFunc] = useState(data[0])
 
-  function rederGrid(data){
-    
+  function rederGrid(){
     function renderRows(numRows) {
       var accumulator = []
       for (let row=0; row<numRows; row++) {

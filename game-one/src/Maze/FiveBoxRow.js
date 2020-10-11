@@ -3,21 +3,20 @@ import './FiveBoxRow.css'
 
 function FiveBoxRow({curPlayerPos, rowid, updatePlayerPosFunc}) {
 
-
-  document.onkeydown = function(e) {
+  document.onkeydown = function(e) {    
     console.log(e.key)
-    if (e.key === 'ArrowLeft'){
+    if ((e.key === 'ArrowLeft')&&(curPlayerPos.x !== 0)){
       updatePlayerPosFunc({x: curPlayerPos.x-1, y: curPlayerPos.y})
     }
-    if (e.key === 'ArrowRight'){
+    if ((e.key === 'ArrowRight')&&(curPlayerPos.x !== 4)){
       updatePlayerPosFunc({x: curPlayerPos.x+1, y: curPlayerPos.y})
     }
-    if (e.key === 'ArrowUp'){
+    if ((e.key === 'ArrowUp')&&(curPlayerPos.y !== 0)){
       updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y-1})
     }
-    if (e.key === 'ArrowDown'){
+    if ((e.key === 'ArrowDown')&&(curPlayerPos.y !== 4)){
       updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y+1})
-    }
+    }  
   };
   
   function getBoxValue(curPlayerPos, curBoxPos){
@@ -25,7 +24,7 @@ function FiveBoxRow({curPlayerPos, rowid, updatePlayerPosFunc}) {
       return 'x'
     }
     else { 
-      return '' 
+      return `${curBoxPos.x}, ${curBoxPos.y}` // return empty instead
     }
   }
 
