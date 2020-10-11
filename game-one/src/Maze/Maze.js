@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import FiveBoxRow from './FiveBoxRow.js'
 import './Maze.css'
 
-function Maze({data}) {
 
+function Maze({data}) {
+  
   var [curPlayerPos, updatePlayerPosFunc] = useState(data[0])
   var [curBotPos, updateBotPosFunc] = useState(data[1])
 

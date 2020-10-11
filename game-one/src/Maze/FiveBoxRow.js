@@ -3,7 +3,7 @@ import './FiveBoxRow.css'
 
 function FiveBoxRow({rowid, curPlayerPos, updatePlayerPosFunc, curBotPos, updateBotPosFunc}) {
 
-  document.onkeydown = function(e) {    
+  document.onkeydown = function(e) {  
     console.log(e.key)
     if ((e.key === 'ArrowLeft')&&(curPlayerPos.x !== 0)){
       updatePlayerPosFunc({x: curPlayerPos.x-1, y: curPlayerPos.y})
@@ -30,16 +30,18 @@ function FiveBoxRow({rowid, curPlayerPos, updatePlayerPosFunc, curBotPos, update
     if ((e.key === 's')&&(curBotPos.y !== 4)){
       updateBotPosFunc({x: curBotPos.x, y: curBotPos.y+1})
     }  
+
+    // must be @end. not begining of
+    // key press 
+    // But `await sleep(1500)` will not work!
+    // becasue the useState functions will rerender
+    // so, use before, `useStae` function @top level
+
   };
   
   function getBoxValue(curPlayerPos, curBoxPos){
     if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
-      //console.log(curPlayerPos.x, curBotPos.x, curPlayerPos.y, curBotPos.y)
-      alert('Player captured!')
-      curPlayerPos.x = 0
-      curPlayerPos.y = 0
-      curBotPos.x = 4
-      curBotPos.y = 4
+      return 'over'
     }
     // update player pos
     if ((curPlayerPos.x === curBoxPos.x) && (curPlayerPos.y === curBoxPos.y)) {
@@ -54,12 +56,24 @@ function FiveBoxRow({rowid, curPlayerPos, updatePlayerPosFunc, curBotPos, update
     }
   }
 
+  function getBoxValueAndResetIsGameOver(box) {
+    var val = getBoxValue(curPlayerPos, {x: box, y: rowid})
+    // reset if game over
+    if (val === 'over') {
+      // these state funcs will re-render the whole component
+      // 'over' is never returned.
+      updateBotPosFunc({x: 4, y: 4})
+      updatePlayerPosFunc({x: 0, y: 0})
+    }
+    return val
+  }
+
   function renderBoxesInRow(numBoxes){
     var accumulator = []
     for(let box=0; box<numBoxes; box++){
       accumulator.push(
         <div className='box' key={box} >
-          {getBoxValue(curPlayerPos, {x: box, y: rowid})}
+          {getBoxValueAndResetIsGameOver(box)}
         </div>
       )
     }
