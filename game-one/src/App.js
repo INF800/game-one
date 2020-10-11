@@ -4,7 +4,9 @@ import Maze from './Maze/Maze.js'
 // from api
 const data = [
   // position of p
-  {x: 2, y: 3}
+  {x: 2, y: 3},
+  // posistion of p2
+  {x: 0, y: 3}
 ]
 
 function App() {

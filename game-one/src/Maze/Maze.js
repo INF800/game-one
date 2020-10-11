@@ -5,6 +5,7 @@ import './Maze.css'
 function Maze({data}) {
 
   var [curPlayerPos, updatePlayerPosFunc] = useState(data[0])
+  var [curBotPos, updateBotPosFunc] = useState(data[1])
 
   function rederGrid(){
     function renderRows(numRows) {
@@ -16,6 +17,8 @@ function Maze({data}) {
             rowid={row} 
             curPlayerPos={curPlayerPos}
             updatePlayerPosFunc={updatePlayerPosFunc} 
+            curBotPos={curBotPos}
+            updateBotPosFunc={updateBotPosFunc} 
           />
         )
       }
