@@ -3,15 +3,24 @@ import Maze from './Maze/Maze.js'
 
 // from api ===============================================================================================
 const data = [
-  // position of p1 - player
+  // 0: position of p1 - player
   {x: 0, y: 0},
-  // posistion of p2 - bot
+  // 1: posistion of p2 - bot
   {x: 4, y: 4},
-  // similarly add moving / static blocks.
+  // 2: similarly add moving / static blocks.
   // for eg, static block: (useState for dynamic)
   {x: 1, y: 1},
-  // cur status
-  {status: 'Move to Start Game'}
+  // 3: cur status
+  {status: 'Move to Start Game'},
+  // 4: extra information
+  {
+    numRows: 5,
+    numCols: 5,
+    intervalAfterPlayerClick: 100, // ? todo: make it 'before'
+    intervalBeforeBotMove: 200,
+    // toggle to stop random mover and use w-a-s-d keys only.
+    makeRandomMovesOrWASDOnly: 'random' // 'random' (or) 'WASD' 
+  }
 ]
 // end: from api ==========================================================================================
 
@@ -32,10 +41,16 @@ let timerId = setInterval( // use timerId in future to teminate
         key  : mapRandIdx[random_idx], 
         char : mapRandIdx[random_idx]
       })
-      //document.dispatchEvent(e) // ! ENABLE / DISBLE TO TRIGGER RANDOM MOVES
+
+      // !todo: STRICLY mention w-a-s-d for both 'random' and 'WASD'
+      if (data[4].makeRandomMovesOrWASDOnly === 'random'){
+        document.dispatchEvent(e)
+      } else if (data[4].makeRandomMovesOrWASDOnly === 'WASD') { 
+        // pass
+      }
     }
   }
-  , 200
+  , data[4].intervalBeforeBotMove
 );
 // end: automate bot key event =============================================================================
 

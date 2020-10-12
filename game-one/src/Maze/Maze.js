@@ -3,9 +3,13 @@ import FiveBoxRow from './FiveBoxRow.js'
 import './Maze.css'
 
 function Maze({data}) {
+  // generate use states here...
   var [curPlayerPos, updatePlayerPosFunc] = useState(data[0])
   var [curBotPos, updateBotPosFunc] = useState(data[1])
   var [curStatus, upDateCurStatus] = useState(data[3].status)
+  var numRows = data[4].numRows
+  var numCols = data[4].numCols
+  var randomOrWASD = data[4].makeRandomMovesOrWASDOnly
 
   function rederGrid(){
     
@@ -16,6 +20,7 @@ function Maze({data}) {
           <FiveBoxRow 
             key={row} 
             rowid={row} 
+            numCols={numCols}
             block0Pos={data[2]} // add more blocks 
             // ---
             curPlayerPos={curPlayerPos}
@@ -37,7 +42,7 @@ function Maze({data}) {
     // will be exectuted (r*c) times
     return (
       <div>
-        {renderRows(5)}
+        {renderRows(numRows)}
       </div>
     )    
   }
@@ -45,7 +50,11 @@ function Maze({data}) {
   // post back to api (executed for any updateState (change is state))
   // Because of 2 if - if - conditions on keydown event, 2 updates:
   // chanage in state happens 2 times so, executed 2 times.
-  console.log(`${curPlayerPos.x},${curPlayerPos.y} ${curBotPos.x},${curBotPos.y} block: ${data[2].x},${data[2].y}`)
+  //console.log(`${curPlayerPos.x},${curPlayerPos.y} ${curBotPos.x},${curBotPos.y} block: ${data[2].x},${data[2].y}`)
+
+  // Primary updates must be made here. Else n^2
+  // This block executes for every update, even for itself
+  // causing an infinite loop.
   if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
     updateBotPosFunc({x: 4, y: 4})
     updatePlayerPosFunc({x: 0, y: 0})
@@ -53,7 +62,6 @@ function Maze({data}) {
   }
 
 
-  console.log(curStatus)
   // return Maze
   return (
     <div>
@@ -62,7 +70,7 @@ function Maze({data}) {
       </div>
       <div className='Extra'>
         How to move opponent?
-        <span><input disabled={true} type="checkbox" defaultChecked={true} /> Random </span>
+        <span><input disabled={true} type="checkbox" defaultChecked={randomOrWASD === 'random'} /> Random </span>
         <span><input disabled={true} type="checkbox" defaultChecked={false} /> Bot </span>
         <br/>Play as 
         <span><input disabled={true} type="checkbox" defaultChecked={false} /> Opponent </span>
@@ -73,6 +81,11 @@ function Maze({data}) {
       </div>
       <div className='curStatus'>
         {curStatus}
+      </div>
+      <div style={{textAlign:"center", fontSize: 'x-small'}}>
+        <br/>
+        (Swipes for touchscreen not yet added)<br/>
+        Use arrow keys to move player.
       </div>
     </div>
   )
