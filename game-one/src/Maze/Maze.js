@@ -47,6 +47,7 @@ function Maze({data}) {
     updatePlayerPosFunc({x: 0, y: 0})
   }
 
+
   // return Maze
   return (
     <div>
@@ -54,14 +55,13 @@ function Maze({data}) {
         Catch The Opponent
       </div>
       <div className='Extra'>
-        How to move opponent? <br/>
-        <span><input type="checkbox" /> Random </span>
-        <span><input type="checkbox" /> Bot </span>
-        <span><input type="checkbox" /> WASD Keyboard </span>
-        <br/>You are 
-        <span><input type="checkbox" /> Opponent </span>
-        <span><input type="checkbox" /> Catcher </span>
-        <span><input type="checkbox" /> Both </span>
+        How to move opponent?
+        <span><input disabled={true} type="checkbox" defaultChecked={true} /> Random </span>
+        <span><input disabled={true} type="checkbox" defaultChecked={false} /> Bot </span>
+        <br/>Play as 
+        <span><input disabled={true} type="checkbox" defaultChecked={false} /> Opponent </span>
+        <span><input disabled={true} type="checkbox" defaultChecked={true} /> Catcher </span>
+        
       </div>
       <div className='mazeContainer'>
         {rederGrid()}

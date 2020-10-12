@@ -3,52 +3,77 @@ import './FiveBoxRow.css'
 
 
 // beg: helpers -----------------------------------------------
-function makePayerMove (e, curPlayerPos, updatePlayerPosFunc) {
-  if ((e.key === 'ArrowLeft')&&(curPlayerPos.x !== 0)){
-    updatePlayerPosFunc({x: curPlayerPos.x-1, y: curPlayerPos.y})
-  }
-  if ((e.key === 'ArrowRight')&&(curPlayerPos.x !== 4)){
-    updatePlayerPosFunc({x: curPlayerPos.x+1, y: curPlayerPos.y})
-  }
-  if ((e.key === 'ArrowUp')&&(curPlayerPos.y !== 0)){
-    updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y-1})
-  }
-  if ((e.key === 'ArrowDown')&&(curPlayerPos.y !== 4)){
-    updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y+1})
-  }  
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function makeBotMove (e, curBotPos, updateBotPosFunc) {
-  if ((e.key === 'a')&&(curBotPos.x !== 0)){
+async function makePayerMove (e, curPlayerPos, updatePlayerPosFunc, block0Pos) {
+    await sleep(100)
+    console.log(block0Pos, curPlayerPos)
+    if (
+      (e.key === 'ArrowLeft')&&
+      (curPlayerPos.x !== 0)&&
+      !((curPlayerPos.x-1 === block0Pos.x) && (curPlayerPos.y === block0Pos.y))
+      ){
+        updatePlayerPosFunc({x: curPlayerPos.x-1, y: curPlayerPos.y})
+    }
+    if ((
+      e.key === 'ArrowRight')&&
+      (curPlayerPos.x !== 4)&&
+      !((curPlayerPos.x+1 === block0Pos.x) && ((curPlayerPos.y === block0Pos.y)))
+      ){
+        updatePlayerPosFunc({x: curPlayerPos.x+1, y: curPlayerPos.y})
+    }
+    if (
+      (e.key === 'ArrowUp')&&
+      (curPlayerPos.y !== 0)&&
+      !((curPlayerPos.y-1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
+      ){
+        updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y-1})
+    }
+    if (
+      (e.key === 'ArrowDown')&&
+      (curPlayerPos.y !== 4)&&
+      !((curPlayerPos.y+1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
+      ){
+        updatePlayerPosFunc({x: curPlayerPos.x, y: curPlayerPos.y+1})
+  }
+}
+
+function makeBotMove (e, curBotPos, updateBotPosFunc, block0Pos) {
+  if (
+    (e.key === 'a')&&
+    (curBotPos.x !== 0)&&
+    !((curBotPos.x-1 === block0Pos.x) && (curBotPos.y === block0Pos.y))
+    ){
     updateBotPosFunc({x: curBotPos.x-1, y: curBotPos.y})
   }
-  if ((e.key === 'd')&&(curBotPos.x !== 4)){
+  if (
+    (e.key === 'd')&&
+    (curBotPos.x !== 4)&&
+    !((curBotPos.x+1 === block0Pos.x) && ((curBotPos.y === block0Pos.y)))
+    ){
     updateBotPosFunc({x: curBotPos.x+1, y: curBotPos.y})
   }
-  if ((e.key === 'w')&&(curBotPos.y !== 0)){
+  if ((
+    e.key === 'w')&&
+    (curBotPos.y !== 0)&&
+    !((curBotPos.y-1 === block0Pos.y) && (curBotPos.x === block0Pos.x))
+    ){
     updateBotPosFunc({x: curBotPos.x, y: curBotPos.y-1})
   }
-  if ((e.key === 's')&&(curBotPos.y !== 4)){
+  if (
+    (e.key === 's')&&
+    (curBotPos.y !== 4)&&
+    !((curBotPos.y+1 === block0Pos.y) && (curBotPos.x === block0Pos.x))
+    ){
     updateBotPosFunc({x: curBotPos.x, y: curBotPos.y+1})
   }  
 }
-
-function makeRandomBotMove(curBotPos, updateBotPosFunc){
-  const mapRandIdx = {
-    "0": {key: 'w'},
-    "1": {key: 'a'},
-    "2": {key: 's'},
-    "3": {key: 'd'},
-    "4": {key: '<donothing>'}, // wait - new state in MDP
-  } 
-
-  var random_idx = (Math.random() * 4).toFixed(0) // [0, 4]
-  console.log(random_idx, mapRandIdx[random_idx])
-  makeBotMove(mapRandIdx[random_idx], curBotPos, updateBotPosFunc)
-}
 // end: helpers -----------------------------------------------
 
-//  React component Component
+
+//  React component Component =====================================================================
 function FiveBoxRow({
   rowid, 
   curPlayerPos, updatePlayerPosFunc, 
@@ -57,21 +82,21 @@ function FiveBoxRow({
 }) {
 
   document.onkeydown = function(e) {  
-    // TODO: Collision effect w/ block
-    // TODO: Speed control
     console.log(e.key)
-    makePayerMove(e, curPlayerPos, updatePlayerPosFunc)
-    //makeBotMove(e, curBotPos, updateBotPosFunc) // using keyboard
-    makeRandomBotMove(curBotPos, updateBotPosFunc) // automate random moves
+    makeBotMove(e, curBotPos, updateBotPosFunc, block0Pos)
+    makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos)
   };
-  
-  function getBoxValue(curPlayerPos, curBoxPos){
+
+
+  // simple function: has nothing to d w/ collision
+  // renders into boxes based on: box position in n^2 loop
+  function getBoxValue(curBoxPos){
     if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
-      return 'over'
+      return 'over' // !Note: not using it for now.
     }
     // put blocks if any
     if ((block0Pos.x === curBoxPos.x) && (block0Pos.y === curBoxPos.y)) {
-      return 'hide'
+      return 'block'
     }       
     // update bot pos
     if ((curBotPos.x === curBoxPos.x) && (curBotPos.y === curBoxPos.y)) {
@@ -87,12 +112,12 @@ function FiveBoxRow({
   }
 
   function getBoxValueAndResetIsGameOver(box) {
-    var val = getBoxValue(curPlayerPos, {x: box, y: rowid})
+    var val = getBoxValue({x: box, y: rowid})
     // reset if game over
     if (val === 'over') {
-      // ! Note:
+      // ! Note: not using it for now.
       // these state funcs will re-render the whole component
-      // 'over' is never returned.
+      // that to (num_rows) times! 'over' is never returned.
       // updateBotPosFunc({x: 4, y: 4})
       // updatePlayerPosFunc({x: 0, y: 0})
     }
@@ -119,3 +144,4 @@ function FiveBoxRow({
 }
 
 export default FiveBoxRow
+// end: React component Component =====================================================================
