@@ -1,6 +1,18 @@
+.mazeHead {
+    margin-top: 20vh;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 .mazeContainer {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20vh;
+}
+
+.Extra {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: smaller;
 }
