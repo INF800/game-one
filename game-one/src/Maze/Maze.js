@@ -49,7 +49,7 @@ function Maze({data}) {
   if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
     updateBotPosFunc({x: 4, y: 4})
     updatePlayerPosFunc({x: 0, y: 0})
-    upDateCurStatus('Game Over. Move to Start Game')
+    upDateCurStatus('Game Over! Move to Start Game')
   }
 
 

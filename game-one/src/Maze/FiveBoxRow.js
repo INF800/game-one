@@ -88,7 +88,7 @@ function FiveBoxRow({
     // update status and make moves
 
     if (
-      ((curStatus === 'Game Over. Move to Start Game') || (curStatus === 'Move to Start Game')) && 
+      ((curStatus === 'Game Over! Move to Start Game') || (curStatus === 'Move to Start Game')) && 
       ((curPlayerPos.x === 0) && (curPlayerPos.y === 0)) // add bot if game is reversed
       ){
         upDateCurStatus('Game Started')
@@ -111,11 +111,11 @@ function FiveBoxRow({
     }       
     // update bot pos
     if ((curBotPos.x === curBoxPos.x) && (curBotPos.y === curBoxPos.y)) {
-      return 'o'
+      return 'x'
     }
     // update player pos
     if ((curPlayerPos.x === curBoxPos.x) && (curPlayerPos.y === curBoxPos.y)) {
-      return 'x'
+      return 'o'
     } 
     else { 
       return '' //`${curBoxPos.x}, ${curBoxPos.y}` // return empty instead
