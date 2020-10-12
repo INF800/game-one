@@ -16,3 +16,8 @@
     margin-bottom: 15px;
     font-size: smaller;
 }
+
+.curStatus {
+    margin-top: 10px;
+    text-align: center;
+}

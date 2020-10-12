@@ -78,11 +78,22 @@ function FiveBoxRow({
   rowid, 
   curPlayerPos, updatePlayerPosFunc, 
   curBotPos, updateBotPosFunc,
-  block0Pos
+  block0Pos, // add more blocks
+  upDateCurStatus,
+  curStatus
 }) {
 
   document.onkeydown = function(e) {  
     console.log(e.key)
+    // update status and make moves
+
+    if (
+      ((curStatus === 'Game Over. Move to Start Game') || (curStatus === 'Move to Start Game')) && 
+      ((curPlayerPos.x === 0) && (curPlayerPos.y === 0)) // add bot if game is reversed
+      ){
+        upDateCurStatus('Game Started')
+    }
+
     makeBotMove(e, curBotPos, updateBotPosFunc, block0Pos)
     makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos)
   };

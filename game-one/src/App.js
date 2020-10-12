@@ -9,7 +9,9 @@ const data = [
   {x: 4, y: 4},
   // similarly add moving / static blocks.
   // for eg, static block: (useState for dynamic)
-  {x: 1, y: 1} 
+  {x: 1, y: 1},
+  // cur status
+  {status: 'Move to Start Game'}
 ]
 // end: from api ==========================================================================================
 
@@ -30,9 +32,8 @@ let timerId = setInterval( // use timerId in future to teminate
         key  : mapRandIdx[random_idx], 
         char : mapRandIdx[random_idx]
       })
-      //document.dispatchEvent(e)
+      //document.dispatchEvent(e) // ! ENABLE / DISBLE TO TRIGGER RANDOM MOVES
     }
-    
   }
   , 200
 );
