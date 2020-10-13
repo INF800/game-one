@@ -16,10 +16,10 @@ const data = [
   {
     numRows: 5,
     numCols: 5,
-    intervalAfterPlayerClick: 100, // ? todo: make it 'before'
-    intervalBeforeBotMove: 200,
+    intervalAfterPlayerClick: 500, // ? todo: make it 'before'
+    intervalBeforeBotMove: 3000,
     // toggle to stop random mover and use w-a-s-d keys only.
-    makeRandomMovesOrWASDOnly: 'random' // 'random' (or) 'WASD' 
+    makeRandomMovesOrWASDOnly: 'WASD' // 'random' (or) 'WASD' 
   }
 ]
 // end: from api ==========================================================================================
@@ -41,7 +41,7 @@ let timerId = setInterval( // use timerId in future to teminate
         key  : mapRandIdx[random_idx], 
         char : mapRandIdx[random_idx]
       })
-
+      // press key
       // !todo: STRICLY mention w-a-s-d for both 'random' and 'WASD'
       if (data[4].makeRandomMovesOrWASDOnly === 'random'){
         document.dispatchEvent(e)

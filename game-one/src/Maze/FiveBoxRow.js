@@ -31,7 +31,6 @@ function FiveBoxRow({
     makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos)
   };
 
-
   // simple function: has nothing to d w/ collision
   // renders into boxes based on: box position in n^2 loop
   function getBoxValue(curBoxPos){
@@ -40,11 +39,11 @@ function FiveBoxRow({
       return BLOCK
     }       
     // update bot pos
-    if ((curBotPos.x === curBoxPos.x) && (curBotPos.y === curBoxPos.y)) {
+    else if ((curBotPos.x === curBoxPos.x) && (curBotPos.y === curBoxPos.y)) {
       return OPPONENT
     }
     // update player pos
-    if ((curPlayerPos.x === curBoxPos.x) && (curPlayerPos.y === curBoxPos.y)) {
+    else if ((curPlayerPos.x === curBoxPos.x) && (curPlayerPos.y === curBoxPos.y)) {
       return PLAYER
     } 
     else { 

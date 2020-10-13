@@ -11,6 +11,22 @@ function Maze({data}) {
   var numCols = data[4].numCols
   var randomOrWASD = data[4].makeRandomMovesOrWASDOnly
 
+
+  React.useEffect(() => {
+      console.log('From uesef:', curPlayerPos, curBotPos) // send it to api
+      if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
+        // reset: will update use effect too
+        updateBotPosFunc({x: 4, y: 4})
+        updatePlayerPosFunc({x: 0, y: 0})
+        upDateCurStatus('Game Over! Move to Start Game')
+        console.log('Game over')
+      }
+
+    }, 
+    [curPlayerPos, curBotPos]
+  );
+  
+
   function rederGrid(){
     
     function renderRows(numRows) {
@@ -46,21 +62,6 @@ function Maze({data}) {
       </div>
     )    
   }
-
-  // post back to api (executed for any updateState (change is state))
-  // Because of 2 if - if - conditions on keydown event, 2 updates:
-  // chanage in state happens 2 times so, executed 2 times.
-  //console.log(`${curPlayerPos.x},${curPlayerPos.y} ${curBotPos.x},${curBotPos.y} block: ${data[2].x},${data[2].y}`)
-
-  // Primary updates must be made here. Else n^2
-  // This block executes for every update, even for itself
-  // causing an infinite loop.
-  if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
-    updateBotPosFunc({x: 4, y: 4})
-    updatePlayerPosFunc({x: 0, y: 0})
-    upDateCurStatus('Game Over! Move to Start Game')
-  }
-
 
   // return Maze
   return (

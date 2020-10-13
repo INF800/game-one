@@ -5,44 +5,6 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos) {
-    
-    await sleep(100) // ? Make it after
-    // async function callback() {
-    //     console.log('Callback!')
-    //     await sleep(100)
-    // }
-    
-    if (
-        (e.key === 'ArrowLeft') &&
-        (curPlayerPos.x !== 0) &&
-        !((curPlayerPos.x - 1 === block0Pos.x) && (curPlayerPos.y === block0Pos.y))
-    ) {
-        updatePlayerPosFunc({ x: curPlayerPos.x - 1, y: curPlayerPos.y })
-    }
-    else if ((
-        e.key === 'ArrowRight') &&
-        (curPlayerPos.x !== 4) &&
-        !((curPlayerPos.x + 1 === block0Pos.x) && ((curPlayerPos.y === block0Pos.y)))
-    ) {
-        updatePlayerPosFunc({ x: curPlayerPos.x + 1, y: curPlayerPos.y })
-    }
-    else if (
-        (e.key === 'ArrowUp') &&
-        (curPlayerPos.y !== 0) &&
-        !((curPlayerPos.y - 1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
-    ) {
-        updatePlayerPosFunc({ x: curPlayerPos.x, y: curPlayerPos.y - 1 })
-    }
-    else if (
-        (e.key === 'ArrowDown') &&
-        (curPlayerPos.y !== 4) &&
-        !((curPlayerPos.y + 1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
-    ) {
-        updatePlayerPosFunc({ x: curPlayerPos.x, y: curPlayerPos.y + 1 })
-    }
-}
-
 function makeBotMove(e, curBotPos, updateBotPosFunc, block0Pos) {
     if (
         (e.key === 'a') &&
@@ -74,4 +36,46 @@ function makeBotMove(e, curBotPos, updateBotPosFunc, block0Pos) {
     }
 }
 
+
+
+async function makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos) {
+    //await sleep(100) // ? Make it after
+    
+    if (
+        (e.key === 'ArrowLeft') &&
+        (curPlayerPos.x !== 0) &&
+        !((curPlayerPos.x - 1 === block0Pos.x) && (curPlayerPos.y === block0Pos.y))
+    ) {
+        updatePlayerPosFunc({ x: curPlayerPos.x - 1, y: curPlayerPos.y })
+    }
+    else if ((
+        e.key === 'ArrowRight') &&
+        (curPlayerPos.x !== 4) &&
+        !((curPlayerPos.x + 1 === block0Pos.x) && ((curPlayerPos.y === block0Pos.y)))
+    ) {
+        
+        updatePlayerPosFunc({ x: curPlayerPos.x + 1, y: curPlayerPos.y })
+        // updatePlayerPosFunc({ x: curPlayerPos.x + 1, y: curPlayerPos.y }, async (n) => {
+        //     //console.log(n.x) // curPlayerPos.x
+        //     await sleep(1000)
+        // })
+
+    }
+    else if (
+        (e.key === 'ArrowUp') &&
+        (curPlayerPos.y !== 0) &&
+        !((curPlayerPos.y - 1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
+    ) {
+        updatePlayerPosFunc({ x: curPlayerPos.x, y: curPlayerPos.y - 1 })
+    }
+    else if (
+        (e.key === 'ArrowDown') &&
+        (curPlayerPos.y !== 4) &&
+        !((curPlayerPos.y + 1 === block0Pos.y) && (curPlayerPos.x === block0Pos.x))
+    ) {
+        updatePlayerPosFunc({ x: curPlayerPos.x, y: curPlayerPos.y + 1 })
+    }
+  }
+  
+  
 export { makeBotMove, makePayerMove }
