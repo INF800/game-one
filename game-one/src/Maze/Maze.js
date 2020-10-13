@@ -13,7 +13,7 @@ function Maze({data}) {
 
 
   React.useEffect(() => {
-      console.log('From uesef:', curPlayerPos, curBotPos) // send it to api
+      console.log('From uesef:', curPlayerPos, curBotPos) // send it to api (doesn't update for blocks and boundaries)
       if ((curPlayerPos.x === curBotPos.x)&&(curPlayerPos.y === curBotPos.y)) {
         // reset: will update use effect too
         updateBotPosFunc({x: 4, y: 4})
@@ -21,11 +21,9 @@ function Maze({data}) {
         upDateCurStatus('Game Over! Move to Start Game')
         console.log('Game over')
       }
-
     }, 
     [curPlayerPos, curBotPos]
   );
-  
 
   function rederGrid(){
     
