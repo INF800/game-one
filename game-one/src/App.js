@@ -1,7 +1,11 @@
 import React from 'react';
+import axios from 'axios'
 import Maze from './Maze/Maze.js'
+import {pressKey, deepCopy} from './Maze/utils/keyPressController'
+import {processGameStaus} from './Maze/utils/processGameStatus'
 
-// from api ===============================================================================================
+// ========================================================================================================
+// from GET api ===============================================================================================
 const data = [
   // 0: position of p1 - player
   {x: 0, y: 0},
@@ -9,51 +13,132 @@ const data = [
   {x: 4, y: 4},
   // 2: similarly add moving / static blocks.
   // for eg, static block: (useState for dynamic)
-  {x: 1, y: 1},
-  // 3: cur status
-  {status: 'Move to Start Game'},
+  [
+    {x: 1, y: 2},
+    {x: 2, y: 1}
+  ],
+  // 3: pits
+  [
+    {x: 3, y: 3},
+  ],
   // 4: extra information
   {
     numRows: 5,
     numCols: 5,
-    intervalAfterPlayerClick: 500, // ? todo: make it 'before'
-    intervalBeforeBotMove: 3000,
+    playerMoveInterval: 10000,
+    botMoveInterval: 10000,
+    playInterval: 1000,
     // toggle to stop random mover and use w-a-s-d keys only.
-    makeRandomMovesOrWASDOnly: 'WASD' // 'random' (or) 'WASD' 
+    isRandomMoves: true, // or `false`
   }
 ]
 // end: from api ==========================================================================================
+// ========================================================================================================
 
-// automate bot key event =================================================================================
-const mapRandIdx = {
-  "0": 'w',
-  "1": 'a',
-  "2": 's',
-  "3": 'd',
-  "4": '<donothing>', // wait - new state in MDP
+// ========================================================================================================
+// there are no "independant" moves =======================================================================
+window.newStates = {
+  curPlayerPos: data[0], 
+  curBotPos: data[1],
+  block0Pos: data[2][0],
+  block1Pos: data[2][1],
+  pit0Pos: data[3][0]
 }
-let timerId = setInterval( // use timerId in future to teminate
-  () => {
-    var random_idx = (Math.random() * 3).toFixed(0) // [0, 4]
-    // if not `<donothing>`, press the key randomly
-    if (mapRandIdx[random_idx] !== '<do-nothing>'){
-      var e = new KeyboardEvent("keydown", {
-        key  : mapRandIdx[random_idx], 
-        char : mapRandIdx[random_idx]
-      })
-      // press key
-      // !todo: STRICLY mention w-a-s-d for both 'random' and 'WASD'
-      if (data[4].makeRandomMovesOrWASDOnly === 'random'){
-        document.dispatchEvent(e)
-      } else if (data[4].makeRandomMovesOrWASDOnly === 'WASD') { 
-        // pass
-      }
-    }
-  }
-  , data[4].intervalBeforeBotMove
-);
-// end: automate bot key event =============================================================================
 
+if (data[4].isRandomMoves) {
+  
+  
+  var botAndPlayerMovetimerId = setInterval( async ()=>{
+
+    // 1. Player:
+    // ==============================================
+    // get what `action` to perfrom and perform action. 
+    // after performing action,
+    // send `reward` and `obeservation` i.e new bot position 
+    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
+    var oldGameStates0 = deepCopy(window.newStates) // new becomes old
+    var action0 = await axios.post('http://127.0.0.1:8003/player/', {
+      status: 'get player move' 
+    })
+    pressKey(action0.data.key)
+    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos, action0.data.key)
+    var newGameSates0 = deepCopy(window.newStates) // updated when move is made
+    var [gameStatus0, curReward0] = processGameStaus(oldGameStates0, newGameSates0)
+    await axios.post('http://127.0.0.1:8003/player/', {
+      status: 'sending cur reward and obsvn on given move',
+      reward: curReward0,
+      gameStatus: gameStatus0,
+      newGameSates: newGameSates0
+    })
+
+    // update for frontend below maze
+    // (some disavantages as not using useEffect)
+    window.gamestatus = gameStatus0
+    console.log('player @', oldGameStates0.curPlayerPos, 'to', newGameSates0.curPlayerPos, 'on', action0.data.key)
+
+    
+    // 2. Bot:
+    // ===============================================
+    // get what `action` to perfrom and perform action. 
+    // after performing action,
+    // send `reward` and `obeservation` i.e new bot position 
+    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
+    var oldGameStates1 = deepCopy(window.newStates) // new becomes old
+    var action1 = await axios.post('http://127.0.0.1:8003/bot/', {
+      status: 'get bot move' 
+    })
+    pressKey(action1.data.key)
+    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos, action1.data.key)
+    var newGameSates1 = deepCopy(window.newStates) // updated when move is made
+    var [gameStatus1, curReward1] = processGameStaus(oldGameStates1, newGameSates1)
+    await axios.post('http://127.0.0.1:8003/bot/', {
+      status: 'sending cur reward and obsvn on given move',
+      reward: curReward1,
+      gameStatus: gameStatus1,
+      newGameSates: newGameSates1
+    })
+
+    // update for frontend below maze
+    // (some disavantages as not using useEffect)
+    window.gamestatus = gameStatus1
+    console.log('bot @', oldGameStates1.curBotPos, 'to', newGameSates1.curBotPos, 'on', action1.data.key)
+
+
+
+  }, data[4].playInterval
+  )
+
+
+// happens pseudo-independantly.
+//  var botMovetimerId = setInterval( async ()=>{
+//    
+//      console.log('1. get bot move when @', window.newStates.curBotPos, window.newStates) // prev new state become old states
+//      var response1 = await axios.post('http://127.0.0.1:8009/bot/', {
+//        status: 'get bot move'
+//      })
+//      console.log('2. exec bot move:', response1.data.key)
+//      pressKey(response1.data.key)
+//      console.log('new state:', window.newStates.curBotPos)
+//
+//    }, data[4].botMoveInterval
+//  )
+// 
+//   var playerMovetimerId = setInterval( async ()=>{
+//    
+//      console.log('3. get player move when @', window.newStates.curPlayerPos ,window.newStates) // prev new state become old states
+//      var response2 = await axios.post('http://127.0.0.1:8009/player/', {
+//        status: 'get player move'
+//      })
+//      console.log('B. exec player move:', response2.data.key)
+//      pressKey(response2.data.key)
+//      console.log('new state:', window.newStates.curPlayerPos)
+//
+//    }, data[4].playerMoveInterval
+//  )
+
+}
+// end: independant moves =================================================================================
+// ========================================================================================================
 
 
 function App() {
