@@ -1,4 +1,5 @@
 import random
+from initialdata import data
 
 # ----------------------------------------
 # create fastapi app 
@@ -43,7 +44,7 @@ class someResponse(BaseModel):
     reward: Optional[int] = None
     gameStatus: Optional[str] = None
     newPlayerState: Optional[Coods] = None
-    #newGameStates: NewGameStates # todo: remove __proto__
+    #newGameStates: NewGameStates # todo: remove __proto__ when coming from frontend
 
 
 # -----------------------------------------
@@ -79,7 +80,7 @@ def get_initial_conditions(request: Request):
 	"""
     initial conditions of maze
 	"""
-	return None
+	return data
 
 
 

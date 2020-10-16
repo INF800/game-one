@@ -33,6 +33,10 @@ function processGameStaus () {
         status = 'player pitfall'
         reward = -1
     }
+    if (isSameCood(window.newStates.curBotPos, window.newStates.pit0Pos)){
+        status = 'bot pitfall'
+        reward = -1
+    }
 
     return [status, reward]
 }
