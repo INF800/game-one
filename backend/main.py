@@ -27,9 +27,23 @@ from fastapi import Request # for get
 from pydantic import BaseModel # for post
 from typing import Optional
 
+class Coods(BaseModel):
+    x: int
+    y: int
+
+class NewGameStates(BaseModel):
+    curBotPos: Coods
+    curPlayerPos: Coods
+    block0Pos: Coods
+    block1Pos: Coods
+    pit0Pos: Coods
+
 class someResponse(BaseModel):
     status: str
-
+    reward: Optional[int] = None
+    gameStatus: Optional[str] = None
+    newPlayerState: Optional[Coods] = None
+    #newGameStates: NewGameStates
     # todo: to define others! (nested)
 
 
@@ -57,8 +71,9 @@ app.add_middleware(
 # =============================================================================================================
 # routes and related funcs
 # =============================================================================================================
-global_p2_moves = ['w', 'a', 's', 'd']
+global_p2_moves = ['d']
 global_p1_moves = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft']
+global_reset = False
 
 @app.get("/")
 def get_initial_conditions(request: Request):
@@ -79,9 +94,13 @@ def update_player_move(resp: someResponse):
         key = global_p1_moves[random.randint(0, 3)]
         context = {'key': key}
         print('Making move:', key)
+        
     if status == 'sending cur reward and obsvn on given move':
         # learn
         context = None
+        print(f'r: {resp.reward}')
+        print(f'gameStatus: {resp.gameStatus}')
+        print(f'observation: {resp.newPlayerState}')
 
     return context
 
@@ -94,11 +113,14 @@ def update_bot_move(resp: someResponse):
     
     status = resp.status
     if status == 'get bot move':
-        key = global_p2_moves[random.randint(0, 3)]
+        key = global_p2_moves[random.randint(0,0)]
         context = {'key': key}
         print('Making move:', key)
     if status == 'sending cur reward and obsvn on given move':
         # learn
         context = None
+        print(f'r: {resp.reward}')
+        print(f'gameStatus: {resp.gameStatus}')
+
 
     return context

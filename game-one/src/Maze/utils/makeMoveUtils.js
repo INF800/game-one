@@ -65,7 +65,7 @@ function makeBotMove(e, curBotPos, updateBotPosFunc, block0Pos, block1Pos, pit0P
 
 
 async function makePayerMove(e, curPlayerPos, updatePlayerPosFunc, block0Pos, block1Pos, pit0Pos) {
-
+    
     if (
         (e.key === 'ArrowLeft') &&
         (curPlayerPos.x !== 0) &&

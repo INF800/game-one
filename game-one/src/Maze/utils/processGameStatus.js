@@ -9,11 +9,43 @@
 //      y: ..+ --- + --- + ----+ 
 //         x: 0     1    2     3 
 //   
+//
+// use deepcopied new/oldGameStates or window.newStates
+// {
+//     curBotPos:        { x: int, y: int },
+//     curPlayerPos:     { x: int, y: int },
+//     block0Pos:        { x: int, y: int }, 
+//     block1Pos:        { x: int, y: int }, 
+//     pit0Pos:          { x: int, y: int }
+// }
+//
 
-
-function processGameStaus (oldGameStates, newGameSates) {
+function processGameStaus () {
     // todo: add logic
-    return ["dynamic status", 0]
+    let status = 'playing'
+    let reward = 0
+
+    if (isSameCood(window.newStates.curPlayerPos, window.newStates.curBotPos)){
+        status = 'gameover'
+        reward = 1
+    }
+    if (isSameCood(window.newStates.curPlayerPos, window.newStates.pit0Pos)){
+        status = 'player fallen in pit 0'
+        reward = -1
+    }
+
+    return [status, reward]
 }
+
+
+
+function isSameCood(xy1, xy2){
+    if ((xy1.x === xy2.x) && ((xy1.y === xy2.y))){
+        return true
+    } else {
+        return false
+    }
+}
+
 
 export {processGameStaus}

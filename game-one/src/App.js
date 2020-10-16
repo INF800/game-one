@@ -25,8 +25,8 @@ const data = [
   {
     numRows: 5,
     numCols: 5,
-    playerMoveInterval: 10000,
-    botMoveInterval: 10000,
+    //playerMoveInterval: 10000,
+    //botMoveInterval: 10000,
     playInterval: 1000,
     // toggle to stop random mover and use w-a-s-d keys only.
     isRandomMoves: true, // or `false`
@@ -35,8 +35,12 @@ const data = [
 // end: from api ==========================================================================================
 // ========================================================================================================
 
+
+
 // ========================================================================================================
 // there are no "independant" moves =======================================================================
+
+// initially,
 window.newStates = {
   curPlayerPos: data[0], 
   curBotPos: data[1],
@@ -47,7 +51,6 @@ window.newStates = {
 
 if (data[4].isRandomMoves) {
   
-  
   var botAndPlayerMovetimerId = setInterval( async ()=>{
 
     // 1. Player:
@@ -57,18 +60,17 @@ if (data[4].isRandomMoves) {
     // send `reward` and `obeservation` i.e new bot position 
     //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
     var oldGameStates0 = deepCopy(window.newStates) // new becomes old
-    var action0 = await axios.post('http://127.0.0.1:8003/player/', {
+    var action0 = await axios.post('http://127.0.0.1:8000/player/', {
       status: 'get player move' 
     })
     pressKey(action0.data.key)
-    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos, action0.data.key)
     var newGameSates0 = deepCopy(window.newStates) // updated when move is made
-    var [gameStatus0, curReward0] = processGameStaus(oldGameStates0, newGameSates0)
-    await axios.post('http://127.0.0.1:8003/player/', {
+    var [gameStatus0, curReward0] = processGameStaus()
+    await axios.post('http://127.0.0.1:8000/player/', {
       status: 'sending cur reward and obsvn on given move',
       reward: curReward0,
       gameStatus: gameStatus0,
-      newGameSates: newGameSates0
+      newPlayerState: newGameSates0.curPlayerPos
     })
 
     // update for frontend below maze
@@ -84,14 +86,13 @@ if (data[4].isRandomMoves) {
     // send `reward` and `obeservation` i.e new bot position 
     //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
     var oldGameStates1 = deepCopy(window.newStates) // new becomes old
-    var action1 = await axios.post('http://127.0.0.1:8003/bot/', {
+    var action1 = await axios.post('http://127.0.0.1:8000/bot/', {
       status: 'get bot move' 
     })
     pressKey(action1.data.key)
-    //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos, action1.data.key)
     var newGameSates1 = deepCopy(window.newStates) // updated when move is made
-    var [gameStatus1, curReward1] = processGameStaus(oldGameStates1, newGameSates1)
-    await axios.post('http://127.0.0.1:8003/bot/', {
+    var [gameStatus1, curReward1] = processGameStaus()
+    await axios.post('http://127.0.0.1:8000/bot/', {
       status: 'sending cur reward and obsvn on given move',
       reward: curReward1,
       gameStatus: gameStatus1,
