@@ -43,8 +43,7 @@ class someResponse(BaseModel):
     reward: Optional[int] = None
     gameStatus: Optional[str] = None
     newPlayerState: Optional[Coods] = None
-    #newGameStates: NewGameStates
-    # todo: to define others! (nested)
+    #newGameStates: NewGameStates # todo: remove __proto__
 
 
 # -----------------------------------------

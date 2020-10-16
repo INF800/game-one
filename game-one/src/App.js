@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import axios from 'axios'
 import Maze from './Maze/Maze.js'
 import {pressKey, deepCopy} from './Maze/utils/keyPressController'
@@ -27,7 +27,7 @@ const data = [
     numCols: 5,
     //playerMoveInterval: 10000,
     //botMoveInterval: 10000,
-    playInterval: 1000,
+    playInterval: 3000,
     // toggle to stop random mover and use w-a-s-d keys only.
     isRandomMoves: true, // or `false`
   }
@@ -73,9 +73,13 @@ if (data[4].isRandomMoves) {
       newPlayerState: newGameSates0.curPlayerPos
     })
 
+    if ((gameStatus0 === 'gameover') || (gameStatus0 === 'player pitfall')){
+      window.location.reload()
+    }
+
     // update for frontend below maze
     // (some disavantages as not using useEffect)
-    window.gamestatus = gameStatus0
+    window.gamestatus = gameStatus0 // ! not exexuted cz of window.location.reload()
     console.log('player @', oldGameStates0.curPlayerPos, 'to', newGameSates0.curPlayerPos, 'on', action0.data.key)
 
     
@@ -143,6 +147,7 @@ if (data[4].isRandomMoves) {
 
 
 function App() {
+
 
   return (
     <div>

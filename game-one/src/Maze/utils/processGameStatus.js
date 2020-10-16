@@ -30,7 +30,7 @@ function processGameStaus () {
         reward = 1
     }
     if (isSameCood(window.newStates.curPlayerPos, window.newStates.pit0Pos)){
-        status = 'player fallen in pit 0'
+        status = 'player pitfall'
         reward = -1
     }
 
