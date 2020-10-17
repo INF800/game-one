@@ -26,7 +26,7 @@ const storedInitialData = [
          numCols: 5,
          //playerMoveInterval: 10000,
          //botMoveInterval: 10000,
-         playInterval: 3000,
+         playInterval: 100,
          // toggle to stop random mover and use w-a-s-d keys only.
          isRandomMoves: true, // or `false` 
        }
@@ -35,9 +35,17 @@ const storedInitialData = [
 
 async function startAIGame() {
 
-    // initialData 
-    const data = deepCopy(storedInitialData)
-    
+    // endpoints
+    const port = '8001/'
+    const mainurl = 'http://127.0.0.1:'
+    const initalDataEndPoint = mainurl + port
+    const playerEndPoint = mainurl + port + 'player/'
+    const botEndPoint = mainurl + port + 'bot/'
+
+
+    // initialData (makes sure api is ready) 
+    const initalResp = await axios.get(initalDataEndPoint)
+    const data = initalResp.data
 
     // ========================================================================================================
     // there are no "independant" moves =======================================================================
@@ -62,17 +70,20 @@ async function startAIGame() {
         // send `reward` and `obeservation` i.e new bot position 
         //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
         var oldGameStates0 = deepCopy(window.newStates) // new becomes old
-        var action0 = await axios.post('http://127.0.0.1:8000/player/', {
-        status: 'get player move' 
+        var action0 = await axios.post(playerEndPoint, {
+        status: 'get player move', 
+        curPlayerState: oldGameStates0.curPlayerPos
         })
         pressKey(action0.data.key)
         var newGameSates0 = deepCopy(window.newStates) // updated when move is made
         var [gameStatus0, curReward0] = processGameStaus()
-        await axios.post('http://127.0.0.1:8000/player/', {
+        await axios.post(playerEndPoint, {
         status: 'sending cur reward and obsvn on given move',
-        reward: curReward0,
+        prevPlayerState: oldGameStates0.curPlayerPos, //s
+        reward: curReward0, // r
+        action: action0.data.key, // a
+        newPlayerState: newGameSates0.curPlayerPos, //s_new
         gameStatus: gameStatus0,
-        newPlayerState: newGameSates0.curPlayerPos
         })
 
         if ((gameStatus0 === 'gameover') || (gameStatus0 === 'player pitfall')){
@@ -90,13 +101,13 @@ async function startAIGame() {
         // send `reward` and `obeservation` i.e new bot position 
         //console.log(window.newStates.curBotPos, window.newStates.curPlayerPos)
         var oldGameStates1 = deepCopy(window.newStates) // new becomes old
-        var action1 = await axios.post('http://127.0.0.1:8000/bot/', {
+        var action1 = await axios.post(botEndPoint, {
         status: 'get bot move' 
         })
         pressKey(action1.data.key)
         var newGameSates1 = deepCopy(window.newStates) // updated when move is made
         var [gameStatus1, curReward1] = processGameStaus()
-        await axios.post('http://127.0.0.1:8000/bot/', {
+        await axios.post(botEndPoint, {
         status: 'sending cur reward and obsvn on given move',
         reward: curReward1,
         gameStatus: gameStatus1,

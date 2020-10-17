@@ -43,9 +43,18 @@ class someResponse(BaseModel):
     status: str
     reward: Optional[int] = None
     gameStatus: Optional[str] = None
+    action: Optional[str] = None
+    prevPlayerState: Optional[Coods] = None
+    curPlayerState: Optional[Coods] = None
     newPlayerState: Optional[Coods] = None
     #newGameStates: NewGameStates # todo: remove __proto__ when coming from frontend
 
+
+# -----------------------------------------
+# Custom
+# -----------------------------------------
+from qtable.playerqtable import Agent
+agent = Agent()
 
 # -----------------------------------------
 # CORS: List of servers to respond to...
@@ -72,14 +81,14 @@ app.add_middleware(
 # routes and related funcs
 # =============================================================================================================
 global_p2_moves = ['d']
-global_p1_moves = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft']
+global_ep_num = 0
 
 @app.get("/")
 def get_initial_conditions(request: Request):
 	"""
     initial conditions of maze
 	"""
-	return data #! currently not using as it hinders window.location.reload()
+	return data #! makes sure that api is ready initially
 
 
 
@@ -87,19 +96,40 @@ def get_initial_conditions(request: Request):
 def update_player_move(resp: someResponse):
     """ independant nn """
     print("="*50)
+    global global_ep_num
+    print("EPISODE: ", global_ep_num)
+    print("="*50)
 
     status = resp.status
+
+    # Make exploitation / exploration
     if status == 'get player move':
-        key = global_p1_moves[random.randint(0, 3)]
+        s   = agent.xy2state(x=resp.curPlayerState.x, y=resp.curPlayerState.y)
+        eps = agent.getEpsilon(global_ep_num, total_episodes=20)
+        key = agent.id2action[agent.make_move(s, epsilon=eps)] # epsilon 0 implies random move
         context = {'key': key}
         print('Making move:', key)
-        
+    
+    # learn
     if status == 'sending cur reward and obsvn on given move':
         # learn
         context = None
+        print("LEARNING")
+        print(f's: {resp.prevPlayerState}')
         print(f'r: {resp.reward}')
+        print(f'a: {resp.action}')
+        print(f's_new: {resp.newPlayerState}') # observation
         print(f'gameStatus: {resp.gameStatus}')
-        print(f'observation: {resp.newPlayerState}')
+        agent.learn(
+            s=agent.xy2state(resp.prevPlayerState.x, resp.prevPlayerState.y),
+            a=agent.action2id[resp.action],
+            r=float(resp.reward),
+            s_new=agent.xy2state(resp.newPlayerState.x, resp.newPlayerState.y)
+        )
+
+        # update episode count
+        if (resp.gameStatus == 'player pitfall') or (resp.gameStatus == 'gameover'):
+            global_ep_num += 1
 
     return context
 
@@ -108,18 +138,18 @@ def update_player_move(resp: someResponse):
 @app.post("/bot")
 def update_bot_move(resp: someResponse):
     """ independant nn """
-    print("="*50)
+    #print("="*50)
     
     status = resp.status
     if status == 'get bot move':
         key = global_p2_moves[random.randint(0,0)]
         context = {'key': key}
-        print('Making move:', key)
+        #print('Making move:', key)
     if status == 'sending cur reward and obsvn on given move':
         # learn
         context = None
-        print(f'r: {resp.reward}')
-        print(f'gameStatus: {resp.gameStatus}')
+        #print(f'r: {resp.reward}')
+        #print(f'gameStatus: {resp.gameStatus}')
 
 
     return context

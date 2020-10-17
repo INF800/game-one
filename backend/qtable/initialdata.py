@@ -23,7 +23,7 @@ data = [
   {
     'numRows': 5,
     'numCols': 5,
-    'playInterval': 3000,
+    'playInterval': 100,
     # toggle to stop random mover and use w-a-s-d keys only.
     'isRandomMoves': True, # or `false`
   }

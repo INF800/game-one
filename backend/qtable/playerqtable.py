@@ -1,14 +1,15 @@
 import random
 import numpy as np
-from initialdata import data
+from . initialdata import data
+#from initialdata import data
 
 class Agent:
     def __init__(self, gamma=0.9, lr=0.9):
         self.id2action = {
             0: 'ArrowUp',
             1: 'ArrowDown',
-            2: 'ArrowLeft',
-            3: 'ArrowRight',
+            2: 'ArrowRight',
+            3: 'ArrowLeft',
         }
         self.action2id = dict([(v,k) for k, v in self.id2action.items()])
 
@@ -37,12 +38,15 @@ class Agent:
         # update q-table
         self.qtable[s, a] = newQ
 
+        # LOG
+        print('New Q Value: ', newQ)
+
     def __max_Q_around_state(self, s:int):
         Qs = self.qtable[s]
         return np.max(Qs)
 
 
-    def make_move(self, s: int, epsilon=0):
+    def make_move(self, s: int, epsilon:float=0):
         """
         Max { qtabel[curstate] } -> action
         """
@@ -56,12 +60,47 @@ class Agent:
         # epsilon[0,1] \propto randomness
         # epsilon = 0 --> always best moves
         randu = np.random.uniform(0, 1)
-        if randu<epsilon:
+        if not (randu<epsilon): # extremely rarely makes exploitation as not using <=
+            print('making random move')
             return random.randint(0,3)
         else:
+            print('making best move')
             return best_action # not string.. id!
 
+    @staticmethod
+    def xy2state(x, y):
+        """ map coods to states' ids 
+            
+        coods (x, y) correspond to:
+           
+             y: 0 + --- + --- + ----+
+                  |     |     |     |  
+             y: 1 + --- + --- + ----+ 
+                  |     |     |     | 
+             y: 2 + --- + --- + ----+ 
+                  |     |     |     |
+             y: ..+ --- + --- + ----+ 
+                x: 0     1    2     3 
+          
+        
+        """
+        # stateid: in [0, 24]
+        # coods: x in [0, 4] y in [0,4] 
+        stateid = x*data[4]['numRows'] + y
+        return stateid
+
+    @staticmethod
+    def getEpsilon(episode_num, total_episodes=50):
+        """ 
+        - epsilon \propto trainingPercent \propto explotation 
+        - exploits more as reaches end of training
+        """
+        # todo: this is linear curve. Make it rectilinear
+        training_per = episode_num / total_episodes
+        return training_per
 
 if __name__ == '__main__':
     a = Agent()
-    a.make_move(10)
+    for x in range(0, 5):
+        for y in range(0,5):
+            print(f'{x},{y}: {a.xy2state(x, y)}')
