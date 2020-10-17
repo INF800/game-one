@@ -1,4 +1,4 @@
-import random
+import random, os
 from qtable.initialdata import data
 
 # ----------------------------------------
@@ -80,8 +80,9 @@ app.add_middleware(
 # =============================================================================================================
 # routes and related funcs
 # =============================================================================================================
-global_p2_moves = ['d']
+global_p2_moves = ['s']
 global_ep_num = 0
+global_epsilon = 0
 
 @app.get("/")
 def get_initial_conditions(request: Request):
@@ -97,6 +98,7 @@ def update_player_move(resp: someResponse):
     """ independant nn """
     print("="*50)
     global global_ep_num
+    global global_epsilon
     print("EPISODE: ", global_ep_num)
     print("="*50)
 
@@ -104,9 +106,11 @@ def update_player_move(resp: someResponse):
 
     # Make exploitation / exploration
     if status == 'get player move':
-        s   = agent.xy2state(x=resp.curPlayerState.x, y=resp.curPlayerState.y)
-        eps = agent.getEpsilon(global_ep_num, total_episodes=20)
-        key = agent.id2action[agent.make_move(s, epsilon=eps)] # epsilon 0 implies random move
+        
+        s               = agent.xy2state(x=resp.curPlayerState.x, y=resp.curPlayerState.y)
+        global_epsilon  = agent.getEpsilon(global_ep_num, total_episodes=20)
+        key             = agent.id2action[agent.make_move(s, epsilon=global_epsilon)] # epsilon 0 implies random move
+        
         context = {'key': key}
         print('Making move:', key)
     
@@ -120,16 +124,18 @@ def update_player_move(resp: someResponse):
         print(f'a: {resp.action}')
         print(f's_new: {resp.newPlayerState}') # observation
         print(f'gameStatus: {resp.gameStatus}')
+        
+        # update episode count
+        if (resp.gameStatus == 'player pitfall') or (resp.gameStatus == 'gameover'):
+            global_ep_num += 1
+            
         agent.learn(
             s=agent.xy2state(resp.prevPlayerState.x, resp.prevPlayerState.y),
             a=agent.action2id[resp.action],
             r=float(resp.reward),
-            s_new=agent.xy2state(resp.newPlayerState.x, resp.newPlayerState.y)
+            s_new=agent.xy2state(resp.newPlayerState.x, resp.newPlayerState.y),
+            ep_num = global_ep_num, epsilon=global_epsilon
         )
-
-        # update episode count
-        if (resp.gameStatus == 'player pitfall') or (resp.gameStatus == 'gameover'):
-            global_ep_num += 1
 
     return context
 

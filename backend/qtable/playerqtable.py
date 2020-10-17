@@ -1,4 +1,4 @@
-import random
+import random, os
 import numpy as np
 from . initialdata import data
 #from initialdata import data
@@ -20,7 +20,7 @@ class Agent:
         self.gamma = 0.9
         self.lr = 0.9
     
-    def learn(self, s: int, a: int, r: float, s_new: int):
+    def learn(self, s: int, a: int, r: float, s_new: int, ep_num, epsilon):
         """ updates q-table
 
         Q <- qtable[curstate][action]
@@ -38,8 +38,10 @@ class Agent:
         # update q-table
         self.qtable[s, a] = newQ
 
-        # LOG
+        # LOG and save
         print('New Q Value: ', newQ)
+        os.makedirs('qtables',exist_ok=True)
+        np.save(f"qtables/qtable_of_episode{ep_num}_epsilon{epsilon}", self.qtable)
 
     def __max_Q_around_state(self, s:int):
         Qs = self.qtable[s]
@@ -62,7 +64,7 @@ class Agent:
         randu = np.random.uniform(0, 1)
         if not (randu<epsilon): # extremely rarely makes exploitation as not using <=
             print('making random move')
-            return random.randint(0,3)
+            return np.random.randint(4, size=1)[0]#random.randint(0,3) it is pseudo-random
         else:
             print('making best move')
             return best_action # not string.. id!
@@ -95,9 +97,24 @@ class Agent:
         - epsilon \propto trainingPercent \propto explotation 
         - exploits more as reaches end of training
         """
+        def rectilinear(per):
+            print('Training percent:', per)
+            if per < 0.1    : return 0
+            if per < 0.2    : return 0.2
+            if per < 0.3    : return 0.2
+            if per < 0.4    : return 0.3
+            if per < 0.5    : return 0.5
+            if per < 0.6    : return 0.5
+            if per < 0.7    : return 0.5
+            if per < 0.8    : return 0.7
+            if per < 0.9    : return 0.9
+            if per < 0.95   : return 0.95
+            else            : return 1
+
         # todo: this is linear curve. Make it rectilinear
         training_per = episode_num / total_episodes
-        return training_per
+        #return training_per
+        return rectilinear(training_per)
 
 if __name__ == '__main__':
     a = Agent()
