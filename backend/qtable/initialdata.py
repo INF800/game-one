@@ -1,3 +1,6 @@
+# ! No way related to Q-table
+# ============================
+
 data = [
 
   # 0: position of p1 - player

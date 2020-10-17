@@ -28,7 +28,7 @@ const storedInitialData = [
          //botMoveInterval: 10000,
          playInterval: 3000,
          // toggle to stop random mover and use w-a-s-d keys only.
-         isRandomMoves: true, // or `false`
+         isRandomMoves: true, // or `false` 
        }
      ]
 

@@ -1,5 +1,5 @@
 import random
-from initialdata import data
+from qtable.initialdata import data
 
 # ----------------------------------------
 # create fastapi app 
@@ -73,14 +73,13 @@ app.add_middleware(
 # =============================================================================================================
 global_p2_moves = ['d']
 global_p1_moves = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft']
-global_reset = False
 
 @app.get("/")
 def get_initial_conditions(request: Request):
 	"""
     initial conditions of maze
 	"""
-	return data
+	return data #! currently not using as it hinders window.location.reload()
 
 
 
