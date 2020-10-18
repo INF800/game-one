@@ -79,26 +79,16 @@ function Maze({data}) {
   return (
     <div>
       <div className="mazeHead">
-        Catch The Opponent
+        Reach the destination
       </div>
       <div className='Extra'>
-        How to move opponent?
-        <span><input disabled={true} type="checkbox" defaultChecked={isRandomMoves} /> Training </span>
-        <span><input disabled={true} type="checkbox" defaultChecked={false} /> Best Moves </span>
-        <br/>Play as 
-        <span><input disabled={true} type="checkbox" defaultChecked={false} /> Opponent </span>
-        <span><input disabled={true} type="checkbox" defaultChecked={true} /> Catcher </span>
+        Reinforcement Learning with Q-Table
       </div>
       <div className='mazeContainer'>
         {rederGrid()}
       </div>
       <div className='curStatus'>
-        <button>Make Best Moves</button>
-      </div>
-      <div style={{textAlign:"center", fontSize: 'x-small'}}>
-        <br/>
-        (Swipes for touchscreen not yet added)<br/>
-        Use arrow keys to move player.
+        Best moves will be made after<br/> the end of training
       </div>
     </div>
   )

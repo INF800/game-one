@@ -2,10 +2,15 @@ import React from 'react';
 import './FiveBoxRow.css'
 import {makeBotMove, makePayerMove} from './utils/makeMoveUtils'
 
+
+import { Icon, InlineIcon } from '@iconify/react';
+import bxBot from '@iconify/icons-bx/bx-bot';
+import bxsHeart from '@iconify/icons-bx/bxs-heart';
+
 var PIT = 'hole'
 var BLOCK = 'block'
-var PLAYER = 'x'
-var OPPONENT = 'o'
+var PLAYER = <Icon fontSize={20} color="blue" icon={bxBot} />
+var OPPONENT = <Icon fontSize={20} color="red" icon={bxsHeart} />
 var EMPTY = ''
 
 function FiveBoxRow({

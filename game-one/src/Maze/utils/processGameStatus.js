@@ -26,13 +26,14 @@ function processGameStaus () {
     let reward = 0
 
     if (isSameCood(window.newStates.curPlayerPos, window.newStates.curBotPos)){
-        status = 'gameover'
+        status = 'gameover' // game won actually as we caught it
         reward = 1
     }
     if (isSameCood(window.newStates.curPlayerPos, window.newStates.pit0Pos)){
         status = 'player pitfall'
         reward = -1
     }
+    // !currently not using
     if (isSameCood(window.newStates.curBotPos, window.newStates.pit0Pos)){
         status = 'bot pitfall'
         reward = -1

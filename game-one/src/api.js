@@ -9,16 +9,16 @@ const storedInitialData = [
        // 0: position of p1 - player
        {x: 0, y: 0},
        // 1: posistion of p2 - bot
-       {x: 4, y: 4},
+       {x: 3, y: 4},
        // 2: similarly add moving / static blocks.
        // for eg, static block: (useState for dynamic)
        [
-         {x: 1, y: 2},
-         {x: 2, y: 1}
+         {x: 2, y: 4},
+         {x: 3, y: 2}
        ],
        // 3: pits
        [
-         {x: 3, y: 3},
+         {x: 1, y: 2},
        ],
        // 4: extra information
        {
@@ -26,9 +26,9 @@ const storedInitialData = [
          numCols: 5,
          //playerMoveInterval: 10000,
          //botMoveInterval: 10000,
-         playInterval: 100,
+         playInterval: 100, // !doesn't matter
          // toggle to stop random mover and use w-a-s-d keys only.
-         isRandomMoves: true, // or `false` 
+         isRandomMoves: false, // or `false` 
        }
      ]
 
@@ -36,7 +36,7 @@ const storedInitialData = [
 async function startAIGame() {
 
     // endpoints
-    const port = '8001/'
+    const port = '8096/'
     const mainurl = 'http://127.0.0.1:'
     const initalDataEndPoint = mainurl + port
     const playerEndPoint = mainurl + port + 'player/'
