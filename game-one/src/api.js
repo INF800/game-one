@@ -36,7 +36,7 @@ const storedInitialData = [
 async function startAIGame() {
 
     // endpoints
-    const port = '8096/'
+    const port = '8099/'
     const mainurl = 'http://127.0.0.1:'
     const initalDataEndPoint = mainurl + port
     const playerEndPoint = mainurl + port + 'player/'

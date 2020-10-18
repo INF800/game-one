@@ -1,7 +1,7 @@
 import React from 'react';
 import './FiveBoxRow.css'
 import {makeBotMove, makePayerMove} from './utils/makeMoveUtils'
-
+import {bestMoves} from './bestMoves/map'
 
 import { Icon, InlineIcon } from '@iconify/react';
 import bxBot from '@iconify/icons-bx/bx-bot';
@@ -38,7 +38,8 @@ function FiveBoxRow({
 
   // simple function: has nothing to d w/ collision
   // renders into boxes based on: box position in n^2 loop
-  function getBoxValue(curBoxPos){
+  function getBoxValue(curBoxPos, displayBestMoves=false){
+    
     // put blocks if any 
     if (
       ((block0Pos.x === curBoxPos.x) && (block0Pos.y === curBoxPos.y)) ||
@@ -49,6 +50,7 @@ function FiveBoxRow({
     if ((pit0Pos.x === curBoxPos.x) && (pit0Pos.y === curBoxPos.y)) {
       return PIT
     }
+
     // update player pos
     else if ((curPlayerPos.x === curBoxPos.x) && (curPlayerPos.y === curBoxPos.y)) {
       return PLAYER
@@ -58,6 +60,9 @@ function FiveBoxRow({
       return OPPONENT
     }
     else { 
+      if (displayBestMoves){
+        return bestMoves[`(${curBoxPos.x}, ${curBoxPos.y})`][0]
+      }
       return EMPTY //`${curBoxPos.x}, ${curBoxPos.y}` // return EMPTY instead
     }
   }
@@ -67,7 +72,10 @@ function FiveBoxRow({
     for(let box=0; box<numBoxes; box++){
       accumulator.push(
         <div className='box' key={box} >
-          {getBoxValue({x: box, y: rowid})}
+          {
+            //getBoxValue({x: box, y: rowid})
+            getBoxValue({x: box, y: rowid})
+          }
         </div>
       )
     }

@@ -66,6 +66,7 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:3002",
 ]
 
 app.add_middleware(
@@ -83,6 +84,7 @@ app.add_middleware(
 global_p2_moves = ['s']
 global_ep_num = 0
 global_epsilon = 0
+global_total_eps = 50
 
 @app.get("/")
 def get_initial_conditions(request: Request):
@@ -108,9 +110,10 @@ def update_player_move(resp: someResponse):
     if status == 'get player move':
         
         s               = agent.xy2state(x=resp.curPlayerState.x, y=resp.curPlayerState.y)
-        global_epsilon  = agent.getEpsilon(global_ep_num, total_episodes=20)
+        global_epsilon  = agent.getEpsilon(global_ep_num, total_episodes=global_total_eps)
         key             = agent.id2action[agent.make_move(s, epsilon=global_epsilon)] # epsilon 0 implies random move
-        
+        #key = agent.id2action[1] 
+
         context = {'key': key}
         print('Making move:', key)
     
@@ -134,7 +137,7 @@ def update_player_move(resp: someResponse):
             a=agent.action2id[resp.action],
             r=float(resp.reward),
             s_new=agent.xy2state(resp.newPlayerState.x, resp.newPlayerState.y),
-            ep_num = global_ep_num, epsilon=global_epsilon
+            game_status= resp.gameStatus, ep_num = global_ep_num, tot_eps=global_total_eps, epsilon=global_epsilon
         )
 
     return context
