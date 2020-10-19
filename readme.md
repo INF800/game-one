@@ -2,7 +2,7 @@
 
 Q-Learning is one of the most basic reinforcement learing algorithms. Even so, they are mesmerizing when seen in action. This in my custom implemntation of algorithm **from scratch using numpy**.
 
-**Blog:** Coming soon!
+**Blog:** [Click here!](https://rakesh4real.github.io/whoami/q-learning)
 
 ### Before Training
 ![](docs/before.gif)
