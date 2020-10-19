@@ -2,9 +2,7 @@ import axios from 'axios'
 import {pressKey, deepCopy} from './Maze/utils/keyPressController'
 import {processGameStaus} from './Maze/utils/processGameStatus'
 
-// ! note: must be same as initial conditions
-// simply removes error: of returning maze in
-// App component even if `startClick` is `false`
+// ! note: must be same as initial conditions unless specified
 const storedInitialData = [
        // 0: position of p1 - player
        {x: 0, y: 0},
@@ -47,10 +45,9 @@ async function startAIGame() {
     const initalResp = await axios.get(initalDataEndPoint)
     const data = initalResp.data
 
-    // ========================================================================================================
-    // there are no "independant" moves =======================================================================
-
     // initially,
+    // ! Note: cause error on keypress as not defined
+    // ! outside staetAIGame
     window.newStates = {
     curPlayerPos: data[0], 
     curBotPos: data[1],
@@ -127,38 +124,9 @@ async function startAIGame() {
     }, data[4].playInterval
     )
 
-
-    // happens pseudo-independantly.
-    //  var botMovetimerId = setInterval( async ()=>{
-    //    
-    //      console.log('1. get bot move when @', window.newStates.curBotPos, window.newStates) // prev new state become old states
-    //      var response1 = await axios.post('http://127.0.0.1:8009/bot/', {
-    //        status: 'get bot move'
-    //      })
-    //      console.log('2. exec bot move:', response1.data.key)
-    //      pressKey(response1.data.key)
-    //      console.log('new state:', window.newStates.curBotPos)
-    //
-    //    }, data[4].botMoveInterval
-    //  )
-    // 
-    //   var playerMovetimerId = setInterval( async ()=>{
-    //    
-    //      console.log('3. get player move when @', window.newStates.curPlayerPos ,window.newStates) // prev new state become old states
-    //      var response2 = await axios.post('http://127.0.0.1:8009/player/', {
-    //        status: 'get player move'
-    //      })
-    //      console.log('B. exec player move:', response2.data.key)
-    //      pressKey(response2.data.key)
-    //      console.log('new state:', window.newStates.curPlayerPos)
-    //
-    //    }, data[4].playerMoveInterval
-    //  )
-
-    }
-    // end: independant moves =================================================================================
-    // ========================================================================================================
-
+    // To make independant moves, set different time intervals
+    // for bot ans for player. (It doesn't matter cz, moves are
+    // never independent in real-life)
 
     return data
 

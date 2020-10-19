@@ -27,7 +27,7 @@ You will need Python3.7+ environment and NPM for:
 - ReactJS frontend
 
 1. In terminal, Goto `backend/` dir and run `python3 -m uvicorn main:app --reload --port 8099` to spawn the backend
-2. In another terminal, Goto `game-one` and run `npm start` start to spawn the React frontend
+2. In another terminal, Goto `game-one` and run `npm start` to spawn the React frontend
 3. Chrome will open and the training procedure will start. After `50` games (about 3-4 mins) best moves will be made!
 
 **Note:** You can change the port number and number of episodes(games for taining) in `api.js` and `main.py` respectively in case of any issues 
